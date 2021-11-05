@@ -1,5 +1,7 @@
 ## <p align="center">Biomarker DAO</p>
 
+Public Ethereum account: 0x5fbf1ca4F0579E8dF632A3857899985584501484
+
 ## 1. Problem Statement
 
 We are on the brink of personalized health breakthroughs that can target treatments based on our health profiles. Machine intelligence combined with large volumes of biomarker data can yield insights on health that were never available before. Collecting biomarker data is also easier than ever before. 
