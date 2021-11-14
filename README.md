@@ -35,3 +35,7 @@ An existing user writes a set of bio-marker data such as timestamped weight.
 3.3 Use case three
 
 A pharma company requests access to a set of data by paying for it in the native token.
+
+## 4. Implimentation details
+
+No unique dependencies or additional resources are required.
