@@ -4,6 +4,7 @@ Public Ethereum account: 0x5fbf1ca4F0579E8dF632A3857899985584501484
 
 URL: https://jcmcqueen.github.io/blockchain-developer-bootcamp-final-project/client/index.html
 
+Screen Recording: https://www.loom.com/share/129b6e11bd2c40eea3590d0e69cf4569
 
 ## 1. Problem Statement
 
