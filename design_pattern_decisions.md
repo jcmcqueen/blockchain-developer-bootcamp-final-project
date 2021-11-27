@@ -1,6 +1,9 @@
 // design patterns
 
-## Inheritance
-The contract inherits from ERC721 Open Zeppelin to use NFT functionality.
 
-Access control design pattern.
+## Access Control Design Patterns
+
+- `Ownable` design pattern used in the functions: `setDefaultPrice()`. With expansion of the functionality of the contract in the future there would be other administrative functions only allowed by the owner
+
+## Inheritance
+- `DNARental` contract inherits the OpenZeppelin `Ownable` contract to enable ownership for one managing user/party.

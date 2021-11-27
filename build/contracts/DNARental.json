@@ -68,8 +68,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -102,8 +101,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -161,8 +159,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -191,8 +188,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -205,8 +201,7 @@
       "name": "rentDNARecord",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function",
-      "payable": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -12940,8 +12935,7 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-27T19:14:39.032Z",
-  "networkType": "ethereum",
+  "updatedAt": "2021-11-27T20:26:05.501Z",
   "devdoc": {
     "author": "Craig McQueen",
     "details": "It has been 20 years since I've coded, please excuse my rustiness",

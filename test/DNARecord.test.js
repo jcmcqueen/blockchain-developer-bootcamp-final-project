@@ -50,17 +50,6 @@ contract("DNARental", function (accounts) {
 
   describe("Functionality", () => { 
 
-    it("it should only allow the owner to set default prices", async () => {
-      try {
-        await setDefaultPrice( 7, {from: contractOwner} );
-        assert.equal( 7, defaultPrice, "the default price was not set")
-      } catch (e) {
-        const { error, reason } = getErrorObj(e.data);
-        assert.equal(error, "revert");
-        assert.equal(reason, ERR_NOT_OWNER);
-      }
-    });
-
     it("add a DNA record", async () => {
       const numRecordsBefore = await instance.getNumRecords();
       var newRecId = await instance.addDNARecord( 25, DNARental.Sex.MALE, "cybermuscle.com", { from: accounts[0] });
@@ -99,11 +88,6 @@ contract("DNARental", function (accounts) {
       );
     });
 
-
-
-    it("rent a DNA record", async () => {
-      await instance.rentDNARecord( 1 );
-    });
 
   });  
 })

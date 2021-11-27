@@ -276,7 +276,8 @@ dnaSubmit.onclick = async () => {
 	send({from: ethereum.selectedAddress})
 
 	const numRecords = await dnaRental.methods.getNumRecords().call();
-	console.log(numRecords.toString());
+	let   numRecText = document.getElementById('numRecText');
+	numRecText.innerHTML = numRecords;
 }
 
 const dnaFetchSubmit = document.getElementById
@@ -294,7 +295,6 @@ dnaFetchSubmit.onclick = async () => {
 
 	let result = await dnaRental.methods.fetchDNARecord( dnaId ).call()
 
-	console.log( "Sex: " + result[1]);
 	let dnaAge = document.getElementById('dnaFetch-age')
 	dnaAge.innerHTML = result[0];
 	let dnaSex = document.getElementById('dnaFetch-sex')
@@ -308,14 +308,14 @@ const dnaBuySubmit = document.getElementById
 ('dnaBuy-input-button');
 
 dnaBuySubmit.onclick = async () => {
-    const   dnaId = document.getElementById
-    ('dnaBuy-input-id').value;
+ //   const   dnaId = document.getElementById
+   // ('dnaBuy-input-id').value;
 
   //  var web3 = new Web3(window.ethereum)
   //  const dnaRental = new web3.eth.Contract(dnaABI, dnaAddress);
  //   dnaRental.setProvider(window.ethereum);
 //	let result = await dnaRental.methods.rentDNARecord( dnaId ).call({from: ethereum.selectedAddress})
 	let dnaRentResult = document.getElementById('dnaRent-result')
-	dnaFile.innerHTML = "sorry - not implemented yet";
+	dnaRentResult.innerHTML = "sorry - not implemented yet";
 
 }
