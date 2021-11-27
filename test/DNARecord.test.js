@@ -9,7 +9,16 @@ with `npm install -g truffle`.
 
 */
 
-let DNARental = artifacts.require("DNARental");
+
+const getErrorObj = (obj = {}) => {
+  const txHash = Object.keys(obj)[0];
+  return obj[txHash];
+};
+const DNARental = artifacts.require("DNARental");
+
+const ERR_RECORDID_NOT_FOUND = "Record does not exist.";
+const ERR_NOT_OWNER = "Ownable: caller is not the owner";
+
 
 const addRecords = async (instance, tx = {}) => {
   await instance.addDNARecord(
@@ -22,7 +31,7 @@ const addRecords = async (instance, tx = {}) => {
 };
 
 contract("DNARental", function (accounts) {
-  const [contractOwner, alice] = accounts;
+  const [contractOwner, secondAccount] = accounts;
  
 
   beforeEach(async () => {
@@ -33,39 +42,68 @@ contract("DNARental", function (accounts) {
  
   it("is owned by owner", async () => {
     assert.equal(
-      // Hint:
-      //   the error `TypeError: Cannot read property 'call' of undefined`
-      //   will be fixed by setting the correct visibility specifier. See
-      //   the following two links
-      //   1: https://docs.soliditylang.org/en/v0.8.5/cheatsheet.html?highlight=visibility#function-visibility-specifiers
-      //   2: https://docs.soliditylang.org/en/v0.8.5/contracts.html#getter-functions
       await instance.owner.call(),
       contractOwner,
       "owner is not correct",
     );
   });
 
-  it("add a DNA record", async () => {
-    await instance.addDNARecord( 34, DNARental.Sex.MALE, "cybermuscle.com", { from:contractOwner});
-    
-    const result = await instance.fetchDNARecord.call(4);
- 
-    assert.equal( result[0], 34, "the age of the last item does not match the expected value",
-    );
+  describe("Functionality", () => { 
+
+    it("it should only allow the owner to set default prices", async () => {
+      try {
+        await setDefaultPrice( 7, {from: contractOwner} );
+        assert.equal( 7, defaultPrice, "the default price was not set")
+      } catch (e) {
+        const { error, reason } = getErrorObj(e.data);
+        assert.equal(error, "revert");
+        assert.equal(reason, ERR_NOT_OWNER);
+      }
+    });
+
+    it("add a DNA record", async () => {
+      const numRecordsBefore = await instance.getNumRecords();
+      var newRecId = await instance.addDNARecord( 25, DNARental.Sex.MALE, "cybermuscle.com", { from: accounts[0] });
+      const numRecordsAfter = await instance.getNumRecords();
+      
+      assert.equal( numRecordsAfter.toNumber(), 
+        numRecordsBefore.toNumber() + 1)
+    });
+
+    it("fetch a DNA record", async () => {
+        try {
+        const result = await instance.fetchDNARecord( 2 );
+        assert.equal( result[2], "https://microsoft.com", "the expected item was not found",);
+      } catch (e) {
+        const { error, reason } = getErrorObj(e.data);
+        assert.equal(error, "revert");
+        assert.equal(reason, ERR_RECORDID_NOT_FOUND);
+      }
+    });
+
+    it("should not be able to fetch a record that doesn't exist", async () => {
+      try {
+      const result = await instance.fetchDNARecord( 5 );
+      assert.equal( result[2], "https://microsoft.com", "the expected item was not found",);
+    } catch (e) {
+      const { error, reason } = getErrorObj(e.data);
+      assert.equal(error, "revert");
+      assert.equal(reason, ERR_RECORDID_NOT_FOUND);
+    }
   });
 
-  it("find a DNA record", async () => {
-    const result = await instance.findDNARecord( 74, DNARental.Sex.MALE );
- 
-     assert.notEqual( result[0], 0, "the expected item was not found",
-    );
-  });
-
-  it("rent a DNA record", async () => {
-    const result = await instance.rentDNARecord( 1 );
- 
- //    assert.notEqual( result[0], 0, "the expected item was not found",
-   
-  });
+    it("find a DNA record", async () => {
+      const result = await instance.findDNARecord( 52, DNARental.Sex.MALE );
   
-});
+      assert.equal( result[0], true, "the expected item was not found",
+      );
+    });
+
+
+
+    it("rent a DNA record", async () => {
+      await instance.rentDNARecord( 1 );
+    });
+
+  });  
+})

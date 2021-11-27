@@ -5,115 +5,125 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title Contract for 'renting' DNA data
 /// @author Craig McQueen
-/// @notice It has been 20 years since I've coded, please excuse my rustiness
-
+/// @notice Allows a users to publish their DNA data and someone else to purchase it.
+/// @dev It has been 20 years since I've coded, please excuse my rustiness
 contract DNARental is Ownable {
     
     /// @notice Emmitted when a record is added.
     /// @param recordId record id
-    event LogRecordAdded(uint recordId);
+    event LogRecordAdded(uint indexed recordId, string uri);
 
-    /// @notice Emmitted when a record is found.
+    /// @notice Emmitted when a record is rented.
     /// @param recordId record id
-    event LogRecordFetched(uint recordId);
+    event LogDNARented(uint indexed recordId);
 
-
-    /// @notice Emmitted when a record is found.
-    /// @param recordId record id
-    event LogRecordFound(uint recordId);
-
-    /// @notice Emmitted when a record is found.
-    /// @param recordId record id
-    event LogDNARented(uint recordId);
-
-    // <enum State: ForSale, Sold, Shipped, Received>
-    enum State { ForSale, Sold, Shipped, Received } // Enum
-    enum Sex { MALE, FEMALE } // Enum
+    // Enum for sex of the person DNA belongs to.
+    enum Sex { MALE, FEMALE } 
 
     struct DNARecord {
         uint    recordId;
         uint    age;
-        uint    price;
         Sex     sex;
-        State   state;
+        uint    price;
+        uint    numRentals;
         string  URI;
         address payable owner;
         }
 
-    struct Rental {
-        uint timestamp;
-        uint amount;
-        address renter;
-    }
-    uint    private recordCounter = 0;
+    uint    recordCounter = 0;
+    uint    defaultPrice = 5;
 
- 
-    mapping(uint => DNARecord) public dnaInventory;
+    mapping(uint => DNARecord) internal dnaInventory;
 
     modifier onlyIfRecordExists(uint recordId) {
-    require( recordId <= recordCounter , 
+    require( recordId <= recordCounter, 
         "Record does not exist.");
     _;
   }
 
-    constructor()  {}
+    constructor()  {
+    }
 
-    /// @notice Adds a record to a given property id
-    /// @dev Check for exact payment sum to avoid having to send ETH back to sender
- 
+    /// @notice Returns the number of records.
+    function getNumRecords( )
+    public view returns(uint) {
+            return recordCounter;
+        }
+
+    /// @notice Adds a record to the DNA inventory. 
+    /// @param _age Age of the person for the dna record.
+    /// @param _sex Sex of the person for the dna record.
+    /// @param _URI Location of the DNA record.
+    /// @dev For simplicity all DNA is worth the same and hard-coded for price.
     function addDNARecord( uint _age, Sex _sex, 
         string memory _URI 
         ) 
-    public onlyOwner returns (uint) {
-        uint newRecordId = recordCounter + 1;
-
-        DNARecord memory newRecord = DNARecord({
-            recordId:   newRecordId,
+    public returns (uint) {
+        
+        dnaInventory[recordCounter] = DNARecord({
+            recordId:   recordCounter,
             age: _age,
             sex: _sex,
-            price: 5,
-            state: State.ForSale,
+            price: defaultPrice,
+            numRentals: 0,
             URI: _URI,
             owner: payable(msg.sender)
         });
 
-        recordCounter = newRecordId;
+        recordCounter = recordCounter + 1;
 
-        dnaInventory[newRecord.recordId] = newRecord;
-        emit LogRecordAdded(newRecord.recordId); 
-        return newRecordId;
+        emit LogRecordAdded(recordCounter, _URI); 
+        return recordCounter;
     }
 
+    /// @notice Finds a record that matches the age and sex.
+    /// @param _age Age to match for record.
+    /// @param _sex Sex to march for record.
     function findDNARecord( uint _age, Sex _sex )
-    public returns (uint256) {
-        uint    returnValue = 0;
+    public view returns (bool, uint) {
+        uint    i = 0;
+        bool    found = false;
 
-        for ( uint i=1 ; i <= recordCounter; i++ ) {
-            if ( dnaInventory[i].age == _age && dnaInventory[i].sex == _sex )
-            {
-                emit LogRecordFound( i );
-                returnValue = i;
-                break;
+        do {
+            if ( dnaInventory[i].age == _age && dnaInventory[i].sex == _sex ) {
+                found = true;
             }
-        }
-        return( returnValue );
+            else {
+                i++;
+            }
+        } while (found == false && i < recordCounter);
+
+        return( found, i );
     }
 
-  
-
-    function fetchDNARecord( uint recordId ) public 
+    /// @notice Fetch a record based on the id.
+    /// @param recordId The id of the DNA record to fetch.
+     function fetchDNARecord( uint recordId ) public view
     onlyIfRecordExists(recordId)  
     returns ( uint age, Sex sex, string memory uri) {
         age = dnaInventory[recordId].age;
         sex = dnaInventory[recordId].sex;
         uri = dnaInventory[recordId].URI;
-        emit LogRecordFetched(recordId);
         return (age, sex, uri );
     } 
 
+    /// @notice Rent a DNA record.
+    /// @param recordId The id of the DNA record to rent.
     function rentDNARecord( uint recordId ) public payable onlyIfRecordExists( recordId ) {
 
+       // console.log( dnaInventory[recordId]._URI);
+       // console.log( dnaInventory[recordId].owner);
+
         dnaInventory[recordId].owner.transfer(dnaInventory[recordId].price);
+        dnaInventory[recordId].numRentals++;
+        // TODO - need to track addresses that rented the DNA
         emit LogDNARented( recordId );
+    }
+
+    /// @notice Set inital price.
+    /// @param price The default price of DNA records.
+    /// @dev Will only be used for records added after price set. Only contract owner can all this.
+    function setDefaultPrice( uint price ) public onlyOwner {
+        defaultPrice = price;
     }
 }

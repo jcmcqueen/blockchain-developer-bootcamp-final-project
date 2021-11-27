@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
  </head>
 <body>
-    <h1>NFT you genes</h1>
+    <h1>Rent your DNA</h1>
     <!-- 1. detect Metamask is installed.-->
 
     <div id="mm-detected"></div>
@@ -18,26 +18,42 @@
 
     <div id="mm-current-account"></div></div>
 
-    <input id="ss-input-age"
+    <!-- 3. allow user to add DNA Record -->
+
+    <h2>Add DNA Record</h2>
+    <input id="dnaAdd-input-age"
     type="number"
     placeholder="Age"/></BR>
 
-    <input id="ss-input-sex"
+    <input id="dnaAdd-input-sex"
     type="radio"
-    placeholder="Sex"/></BR>
+    value="Male"/>
+    <label for="Male">Male</label></BR>
 
-    <input id="ss-input-file"
-    type="file"
+    <input id="dnaAdd-input-sex"
+    type="radio"
+    value="Female"/>
+    <label for="Female">Female</label></BR>
+
+    <input id="dnaAdd-input-file"
+    type="text"
     placeholder="File"/></BR>
 
 
-    <button id="ss-input-button">Submit Value</button>
+    <button id="dnaAdd-input-button">Add Record</button>
 
+ 
+    <!-- 4. allow user to find a record  -->
+    <h2>Fetch DNA Record</h2>
+    Record id: 
+    <input id="dnaFetch-input-id"
+    type="number"/>
+    <button id="dnaFetch-input-button">Get Record</button></br>
+    Age: <div id="dnaFetch-age"></div></div>
+    File: <div id="dnaFetch-file"></div></div>
 
-    <!-- 3. allow user to send transaction -->
-
-
-    <!-- 4. allow user to read state -->
+   <!-- 5. allow user to buy the DNA record  -->
+   <button id="dnaBuy-input-button">Buy this Record</button></br>
 
     <script src="dapp.js"></script>
 </body>
