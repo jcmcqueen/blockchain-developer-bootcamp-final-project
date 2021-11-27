@@ -1,8 +1,5 @@
-console.log("hello")
-const dnaAddress = 
-//'0x5B867fc0ed89bB2F3Ff9E40c709980f6Fb23E519'
-'0x3B7263c6A3ed22C2dAf667193d85b4afF00fc108'
-//'0x9Afa32D09BC0AFe1830AF9c63f24Bc5db68066Fe'
+
+const dnaAddress = '0xEC3F02dAeCDCaA47CAD8431DEa09a291092f2373'
 
 const dnaABI =[
     {
@@ -14,7 +11,7 @@ const dnaABI =[
 		"anonymous": false,
 		"inputs": [
 		  {
-			"indexed": false,
+			"indexed": true,
 			"internalType": "uint256",
 			"name": "recordId",
 			"type": "uint256"
@@ -27,39 +24,19 @@ const dnaABI =[
 		"anonymous": false,
 		"inputs": [
 		  {
-			"indexed": false,
+			"indexed": true,
 			"internalType": "uint256",
 			"name": "recordId",
 			"type": "uint256"
+		  },
+		  {
+			"indexed": false,
+			"internalType": "string",
+			"name": "uri",
+			"type": "string"
 		  }
 		],
 		"name": "LogRecordAdded",
-		"type": "event"
-	  },
-	  {
-		"anonymous": false,
-		"inputs": [
-		  {
-			"indexed": false,
-			"internalType": "uint256",
-			"name": "recordId",
-			"type": "uint256"
-		  }
-		],
-		"name": "LogRecordFetched",
-		"type": "event"
-	  },
-	  {
-		"anonymous": false,
-		"inputs": [
-		  {
-			"indexed": false,
-			"internalType": "uint256",
-			"name": "recordId",
-			"type": "uint256"
-		  }
-		],
-		"name": "LogRecordFound",
 		"type": "event"
 	  },
 	  {
@@ -174,13 +151,19 @@ const dnaABI =[
 		"name": "findDNARecord",
 		"outputs": [
 		  {
+			"internalType": "bool",
+			"name": "",
+			"type": "bool"
+		  },
+		  {
 			"internalType": "uint256",
 			"name": "",
 			"type": "uint256"
 		  }
 		],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"stateMutability": "view",
+		"type": "function",
+		"constant": true
 	  },
 	  {
 		"inputs": [
@@ -225,6 +208,19 @@ const dnaABI =[
 		"stateMutability": "payable",
 		"type": "function",
 		"payable": true
+	  },
+	  {
+		"inputs": [
+		  {
+			"internalType": "uint256",
+			"name": "price",
+			"type": "uint256"
+		  }
+		],
+		"name": "setDefaultPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	  }
 	]
 
@@ -259,6 +255,14 @@ dnaSubmit.onclick = async () => {
     const   dnaAge = document.getElementById
     ('dnaAdd-input-age').value;
 
+	let	dnaSex = 0;
+	var ele = document.getElementsByName('gender');
+              
+            for(i = 0; i < ele.length; i++) {
+                if(ele[i].checked && ele[i].value == "Female")
+					dnaSex = 1;
+			}
+
 	const   dnaFile = document.getElementById
     ('dnaAdd-input-file').value;
 
@@ -268,11 +272,11 @@ dnaSubmit.onclick = async () => {
 	
     dnaRental.setProvider(window.ethereum);
 
-	await dnaRental.methods.addDNARecord( dnaAge, 1, dnaFile).
+	await dnaRental.methods.addDNARecord( dnaAge, dnaSex, dnaFile).
 	send({from: ethereum.selectedAddress})
 
-//	const numRecords = await dnaRental.methods.getNumRecords()
-//	console.log(numRecords[0].toString());
+	const numRecords = await dnaRental.methods.getNumRecords().call();
+	console.log(numRecords.toString());
 }
 
 const dnaFetchSubmit = document.getElementById
@@ -290,8 +294,11 @@ dnaFetchSubmit.onclick = async () => {
 
 	let result = await dnaRental.methods.fetchDNARecord( dnaId ).call()
 
+	console.log( "Sex: " + result[1]);
 	let dnaAge = document.getElementById('dnaFetch-age')
 	dnaAge.innerHTML = result[0];
+	let dnaSex = document.getElementById('dnaFetch-sex')
+	dnaSex.innerHTML = result[1].toString();
 	let dnaFile = document.getElementById('dnaFetch-file')
 	dnaFile.innerHTML = result[2];
 
@@ -304,11 +311,11 @@ dnaBuySubmit.onclick = async () => {
     const   dnaId = document.getElementById
     ('dnaBuy-input-id').value;
 
-    var web3 = new Web3(window.ethereum)
+  //  var web3 = new Web3(window.ethereum)
+  //  const dnaRental = new web3.eth.Contract(dnaABI, dnaAddress);
+ //   dnaRental.setProvider(window.ethereum);
+//	let result = await dnaRental.methods.rentDNARecord( dnaId ).call({from: ethereum.selectedAddress})
+	let dnaRentResult = document.getElementById('dnaRent-result')
+	dnaFile.innerHTML = "sorry - not implemented yet";
 
-    const dnaRental = new web3.eth.Contract(dnaABI, dnaAddress);
-	
-    dnaRental.setProvider(window.ethereum);
-
-	let result = await dnaRental.methods.rentDNARecord( dnaId ).call({from: ethereum.selectedAddress})
 }

@@ -25,19 +25,21 @@
     type="number"
     placeholder="Age"/></BR>
 
-    <input id="dnaAdd-input-sex"
+    <input id="dnaAdd-input-gender-male"
     type="radio"
+    name="gender"
     value="Male"/>
     <label for="Male">Male</label></BR>
 
-    <input id="dnaAdd-input-sex"
+    <input id="dnaAdd-input-gender-female"
     type="radio"
-    value="Female"/>
+    name="gender"
+    value="Female" checked/>
     <label for="Female">Female</label></BR>
 
     <input id="dnaAdd-input-file"
     type="text"
-    placeholder="File"/></BR>
+    placeholder="URI"/></BR>
 
 
     <button id="dnaAdd-input-button">Add Record</button>
@@ -49,11 +51,13 @@
     <input id="dnaFetch-input-id"
     type="number"/>
     <button id="dnaFetch-input-button">Get Record</button></br>
-    Age: <div id="dnaFetch-age"></div></div>
-    File: <div id="dnaFetch-file"></div></div>
+    Age:<div id="dnaFetch-age"></div>
+    Gender: <div id="dnaFetch-sex"></div>
+    File: <div id="dnaFetch-file"></div>
 
    <!-- 5. allow user to buy the DNA record  -->
-   <button id="dnaBuy-input-button">Buy this Record</button></br>
+   <button id="dnaBuy-input-button">Rent this Record</button></br>
+   <div id="dnaRent-result"></div>
 
     <script src="dapp.js"></script>
 </body>

@@ -111,9 +111,6 @@ contract DNARental is Ownable {
     /// @param recordId The id of the DNA record to rent.
     function rentDNARecord( uint recordId ) public payable onlyIfRecordExists( recordId ) {
 
-       // console.log( dnaInventory[recordId]._URI);
-       // console.log( dnaInventory[recordId].owner);
-
         dnaInventory[recordId].owner.transfer(dnaInventory[recordId].price);
         dnaInventory[recordId].numRentals++;
         // TODO - need to track addresses that rented the DNA
